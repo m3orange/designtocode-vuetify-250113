@@ -102,6 +102,8 @@ export const VListItem = genericComponent<VListItemSlots>()({
 
   emits: {
     click: (e: MouseEvent | KeyboardEvent) => true,
+    'click:prepend': (e: MouseEvent | KeyboardEvent) => true,
+    'click:append': (e: MouseEvent | KeyboardEvent) => true,
   },
 
   setup (props, { attrs, slots, emit }) {
@@ -161,6 +163,16 @@ export const VListItem = genericComponent<VListItemSlots>()({
       props.value != null && select(!isSelected.value, e)
     }
 
+    function onPrependClick (e: MouseEvent) {
+      e.stopImmediatePropagation()
+      emit('click:prepend', e)
+    }
+
+    function onAppendClick (e: MouseEvent) {
+      e.stopImmediatePropagation()
+      emit('click:append', e)
+    }
+
     function onKeyDown (e: KeyboardEvent) {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault()
@@ -214,7 +226,7 @@ export const VListItem = genericComponent<VListItemSlots>()({
           { genOverlays(isClickable.value || isActive.value, 'v-list-item') }
 
           { hasPrepend && (
-            <div key="prepend" class="v-list-item__prepend">
+            <div key="prepend" class="v-list-item__prepend" onClick={ prependClick }>
               { !slots.prepend ? (
                 <>
                   { props.prependAvatar && (
@@ -274,7 +286,7 @@ export const VListItem = genericComponent<VListItemSlots>()({
           </div>
 
           { hasAppend && (
-            <div key="append" class="v-list-item__append">
+            <div key="append" class="v-list-item__append" onClick={ appendClick }>
               { !slots.append ? (
                 <>
                   { props.appendIcon && (
