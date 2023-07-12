@@ -29,6 +29,7 @@ import {
   DatePickerFormatter,
   TouchWrapper,
 } from 'vuetify/types'
+import { VNodeData } from 'vue/types/umd'
 
 type CalculateTableDateFunction = (v: number) => string
 
@@ -63,6 +64,9 @@ export default mixins(
       required: true,
     },
     value: [String, Array] as PropType<string | string[]>,
+    focusedMonthIndex: Number,
+    focusedDateIndex: Number,
+    shouldAutofocus: Boolean,
   },
 
   data: () => ({
@@ -115,21 +119,37 @@ export default mixins(
         ...this.themeClasses,
       }
     },
-    genButtonEvents (value: string, isAllowed: boolean, mouseEventType: string) {
+    genButtonEvents (value: string, isAllowed: boolean, mouseEventType: string, cellIndex: number | undefined) {
       if (this.disabled) return undefined
 
       return mergeListeners({
         click: () => {
-          if (isAllowed && !this.readonly) this.$emit('input', value)
+          if (isAllowed && !this.readonly) {
+            this.$emit('input', value)
+            cellIndex !== undefined && this.$emit('update-focused-cell', cellIndex)
+          }
+        },
+        keydown: (e: KeyboardEvent) => {
+          if (isAllowed && !this.readonly && (e.code === 'Space' || e.code === 'Enter')) {
+            this.$emit('update:should-autofocus', true)
+          }
         },
       }, createItemTypeNativeListeners(this, `:${mouseEventType}`, value))
     },
-    genButton (value: string, isFloating: boolean, mouseEventType: string, formatter: DatePickerFormatter, isOtherMonth = false) {
+    genButton (
+      value: string,
+      isFloating: boolean,
+      mouseEventType: string,
+      formatter: DatePickerFormatter,
+      isOtherMonth = false,
+      cellIndex?: number | undefined
+    ) {
       const isAllowed = isDateAllowed(value, this.min, this.max, this.allowedDates)
       const isSelected = this.isSelected(value) && isAllowed
       const isCurrent = value === this.current
       const setColor = isSelected ? this.setBackgroundColor : this.setTextColor
       const color = (isSelected || isCurrent) && (this.color || 'accent')
+      const isFocused = cellIndex === this.focusedDateIndex || cellIndex === this.focusedMonthIndex
       let isFirst = false
       let isLast = false
       if (this.range && !!this.value && Array.isArray(this.value)) {
@@ -149,11 +169,12 @@ export default mixins(
         ),
         attrs: {
           type: 'button',
+          tabindex: isFocused ? 0 : -1,
         },
         domProps: {
           disabled: this.disabled || !isAllowed || isOtherMonth,
         },
-        on: this.genButtonEvents(value, isAllowed, mouseEventType),
+        on: this.genButtonEvents(value, isAllowed, mouseEventType, cellIndex),
       }), [
         this.$createElement('div', {
           staticClass: 'v-btn__content',
@@ -215,7 +236,12 @@ export default mixins(
     genTable (staticClass: string, children: VNodeChildren, calculateTableDate: CalculateTableDateFunction) {
       const transition = this.$createElement('transition', {
         props: { name: this.computedTransition },
-      }, [this.$createElement('table', { key: this.tableDate }, children)])
+        on: {
+          afterLeave: () => this.$emit('table-transitionend'),
+        },
+      }, [this.$createElement('table', {
+        key: this.tableDate,
+      }, children)])
 
       const touchDirective = {
         name: 'touch',
@@ -227,18 +253,24 @@ export default mixins(
         },
       }
 
+      const events: VNodeData['on'] = {
+        keydown: this.handleKeydown,
+      }
+
+      if (!this.disabled && this.scrollable) {
+        events.wheel = (e: WheelEvent) => {
+          e.preventDefault()
+          if (this.isValidScroll(e.deltaY, calculateTableDate)) { this.wheelThrottle(e, calculateTableDate) }
+        }
+      }
+
       return this.$createElement('div', {
         staticClass,
         class: {
           'v-date-picker-table--disabled': this.disabled,
           ...this.themeClasses,
         },
-        on: (!this.disabled && this.scrollable) ? {
-          wheel: (e: WheelEvent) => {
-            e.preventDefault()
-            if (this.isValidScroll(e.deltaY, calculateTableDate)) { this.wheelThrottle(e, calculateTableDate) }
-          },
-        } : undefined,
+        on: events,
         directives: [touchDirective],
       }, [transition])
     },
@@ -253,6 +285,15 @@ export default mixins(
       }
 
       return value === this.value
+    },
+    handleKeydown (e: KeyboardEvent) {
+      const availableKeyCodes = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End']
+      e.stopPropagation()
+
+      if (availableKeyCodes.includes(e.code)) {
+        e.preventDefault()
+        this.$emit(`keydown:${e.code.toLowerCase()}`)
+      }
     },
   },
 })

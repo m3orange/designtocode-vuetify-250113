@@ -488,6 +488,14 @@ export function fillArray<T> (length: number, obj: T) {
   return Array(length).fill(obj)
 }
 
+export function findLastIndex<T> (array: Array<T>, predicate: (value: T, index: number, obj: T[]) => boolean): number {
+  let l = array.length
+  while (l--) {
+    if (predicate(array[l], l, array)) return l
+  }
+  return -1
+}
+
 /**  Polyfill for Event.prototype.composedPath */
 export function composedPath (e: Event): EventTarget[] {
   if (e.composedPath) return e.composedPath()
