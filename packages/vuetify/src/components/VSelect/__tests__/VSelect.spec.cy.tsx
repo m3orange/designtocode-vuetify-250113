@@ -2,7 +2,10 @@
 
 // Components
 import { VSelect } from '../VSelect'
+import { VAutocomplete } from '@/components/VAutocomplete'
+import { VCombobox } from '@/components/VCombobox'
 import { VForm } from '@/components/VForm'
+import { VCol, VRow } from '@/components/VGrid'
 import { VListItem } from '@/components/VList'
 
 // Utilities
@@ -530,6 +533,40 @@ describe('VSelect', () => {
       .should('have.class', 'v-select--active-menu')
       .trigger('keydown', { key: keyValues.esc })
       .should('not.have.class', 'v-select--active-menu')
+  })
+
+  // https://github.com/vuetifyjs/vuetify/issues/17488
+  it('should close its open menu when the menu of another select component is opened via a click', () => {
+    cy.mount(() => (
+      <VRow>
+        <VCol>
+          <VSelect
+            items={['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']}
+          />
+        </VCol>
+        <VCol>
+          <VAutocomplete
+            items={['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']}
+          />
+        </VCol>
+        <VCol>
+          <VCombobox
+            items={['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']}
+          />
+        </VCol>
+      </VRow>
+    ))
+
+    cy.get('.v-select').realClick()
+    cy.get('.v-overlay__content.v-select__content')
+      .should('exist')
+    cy.realPress('ArrowDown')
+
+    cy.get('.v-autocomplete').realClick()
+    cy.get('.v-overlay__content.v-autocomplete__content')
+      .should('exist')
+      .get('.v-overlay__content.v-select__content')
+      .should('not.exist')
   })
 
   describe('Showcase', () => {
