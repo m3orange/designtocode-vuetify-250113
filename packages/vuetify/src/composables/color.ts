@@ -37,7 +37,7 @@ export function useColor (colors: Ref<{ background?: ColorValue, text?: ColorVal
           }
         }
       } else {
-        classes.push(`bg-${colors.value.background}`)
+        classes.push(`${colors.value.background?.startsWith('bg-') ? '' : 'bg-'}${colors.value.background}`)
       }
     }
 
@@ -46,7 +46,7 @@ export function useColor (colors: Ref<{ background?: ColorValue, text?: ColorVal
         styles.color = colors.value.text
         styles.caretColor = colors.value.text
       } else {
-        classes.push(`text-${colors.value.text}`)
+        classes.push(`${colors.value.text?.startsWith('text-') ? '' : 'text-'}${colors.value.text}`)
       }
     }
 
