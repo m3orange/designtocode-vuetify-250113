@@ -16,8 +16,15 @@ import { makeVariantProps } from '@/composables/variant'
 import { toRef } from 'vue'
 import { genericComponent, propsFactory, useRender } from '@/util'
 
+// Types
+import type { PropType } from 'vue'
+
 export const makeVBtnGroupProps = propsFactory({
   divided: Boolean,
+  direction: {
+    type: String as PropType<'horizontal' | 'vertical'>,
+    default: 'horizontal',
+  },
 
   ...makeBorderProps(),
   ...makeComponentProps(),
@@ -43,7 +50,7 @@ export const VBtnGroup = genericComponent()({
 
     provideDefaults({
       VBtn: {
-        height: 'auto',
+        height: props.direction === 'horizontal' ? 'auto' : null,
         color: toRef(props, 'color'),
         density: toRef(props, 'density'),
         flat: true,
@@ -56,6 +63,7 @@ export const VBtnGroup = genericComponent()({
         <props.tag
           class={[
             'v-btn-group',
+            `v-btn-group--${props.direction}`,
             {
               'v-btn-group--divided': props.divided,
             },
