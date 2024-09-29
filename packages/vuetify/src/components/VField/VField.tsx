@@ -272,8 +272,8 @@ export const VField = genericComponent<new <T>(
             props.style,
           ]}
           onClick={ onClick }
-          onMouseenter= { () => changeHover(true) }
-          onMouseleave= { () => changeHover(false) }
+          onMouseenter = { () => changeHover(true) }
+          onMouseleave = { () => changeHover(false) }
           { ...attrs }
         >
           <div class="v-field__overlay" />
