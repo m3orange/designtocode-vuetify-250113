@@ -219,9 +219,9 @@ export const VField = genericComponent<new <T>(
 
       props['onClick:clear']?.(new MouseEvent('click'))
     }
- 
+
     const isHovered = ref(false)
-    function changeHover(value: boolean) {
+    function changeHover (value: boolean) {
       isHovered.value = value
     }
     useRender(() => {

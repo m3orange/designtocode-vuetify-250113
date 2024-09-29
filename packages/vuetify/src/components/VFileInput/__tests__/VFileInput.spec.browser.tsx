@@ -85,7 +85,7 @@ describe('VFileInput', () => {
   it('should clear input', async () => {
     const model = ref([oneMBFile, twoMBFile])
     render(() => (
-      <VFileInput v-model={ model.value } multiple/>
+      <VFileInput v-model={ model.value } multiple />
     ))
     const element = screen.getByText('1MB file, 2MB file')
 
