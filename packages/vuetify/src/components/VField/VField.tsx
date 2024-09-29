@@ -272,8 +272,8 @@ export const VField = genericComponent<new <T>(
             props.style,
           ]}
           onClick={ onClick }
-          onMouseenter={() => changeHover(true)}
-          onMouseleave={() => changeHover(false)}
+          onMouseenter= { () => changeHover(true) }
+          onMouseleave= { () => changeHover(false) }
           { ...attrs }
         >
           <div class="v-field__overlay" />
@@ -325,7 +325,7 @@ export const VField = genericComponent<new <T>(
             } as VFieldSlot)}
           </div>
 
-          {(hasClear && (isFocused.value || isHovered.value) ) && (
+          { (hasClear && (isFocused.value || isHovered.value)) && (
             <VExpandXTransition key="clear">
               <div
                 class="v-field__clearable"
