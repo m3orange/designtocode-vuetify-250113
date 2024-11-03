@@ -62,7 +62,6 @@ export type VDataTableSlots<T> = VDataTableRowsSlots<T> & VDataTableHeadersSlots
   top: VDataTableSlotProps<T>
   body: VDataTableSlotProps<T>
   tbody: VDataTableSlotProps<T>
-  thead: VDataTableSlotProps<T>
   tfoot: VDataTableSlotProps<T>
   bottom: VDataTableSlotProps<T>
   'body.prepend': VDataTableSlotProps<T>
@@ -245,12 +244,10 @@ export const VDataTable = genericComponent<new <T extends readonly any[], V>(
               <>
                 { slots.colgroup?.(slotProps.value) }
                 { !props.hideDefaultHeader && (
-                  <thead key="thead">
-                    <VDataTableHeaders
-                      { ...dataTableHeadersProps }
-                      v-slots={ slots }
-                    />
-                  </thead>
+                  <VDataTableHeaders
+                    { ...dataTableHeadersProps }
+                    v-slots={ slots }
+                  />
                 )}
                 { slots.thead?.(slotProps.value) }
                 { !props.hideDefaultBody && (
