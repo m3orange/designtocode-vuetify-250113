@@ -55,7 +55,7 @@ export const makeLineProps = propsFactory({
     default: 8,
   },
   showLabels: Boolean,
-  smooth: Boolean,
+  smooth: [Boolean, Number],
   width: {
     type: [Number, String],
     default: 300,
