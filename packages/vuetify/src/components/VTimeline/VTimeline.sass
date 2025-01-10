@@ -23,25 +23,28 @@
       grid-column-gap: $timeline-item-padding
       width: 100%
 
-      .v-timeline-item:nth-child(2n)
-        .v-timeline-item__body
-          grid-row: 3
-          padding-block-start: $timeline-item-padding
+      .v-timeline-item
+        &--side-start,
+        &:nth-child(2n):not(&--side-end)
+          .v-timeline-item__body
+            grid-row: 3
+            padding-block-start: $timeline-item-padding
 
-        .v-timeline-item__opposite
-          grid-row: 1
-          padding-block-end: $timeline-item-padding
-          align-self: flex-end
+          .v-timeline-item__opposite
+            grid-row: 1
+            padding-block-end: $timeline-item-padding
+            align-self: flex-end
 
-      .v-timeline-item:nth-child(2n+1)
-        .v-timeline-item__body
-          grid-row: 1
-          padding-block-end: $timeline-item-padding
-          align-self: flex-end
+        &--side-end,
+        &:nth-child(2n+1):not(&--side-start)
+          .v-timeline-item__body
+            grid-row: 1
+            padding-block-end: $timeline-item-padding
+            align-self: flex-end
 
-        .v-timeline-item__opposite
-          grid-row: 3
-          padding-block-start: $timeline-item-padding
+          .v-timeline-item__opposite
+            grid-row: 3
+            padding-block-start: $timeline-item-padding
 
     @include vertical(true)
       row-gap: $timeline-item-padding
@@ -53,24 +56,27 @@
       @include timeline-last-item()
         padding-block-end: $timeline-item-padding
 
-      .v-timeline-item:nth-child(2n)
-        .v-timeline-item__body
-          grid-column: 1
-          padding-inline-end: $timeline-item-padding
+      .v-timeline-item
+        &--side-start,
+        &:nth-child(2n):not(&--side-end)
+          .v-timeline-item__body
+            grid-column: 1
+            padding-inline-end: $timeline-item-padding
 
-        .v-timeline-item__opposite
-          grid-column: 3
-          padding-inline-start: $timeline-item-padding
+          .v-timeline-item__opposite
+            grid-column: 3
+            padding-inline-start: $timeline-item-padding
 
-      .v-timeline-item:nth-child(2n+1)
-        .v-timeline-item__body
-          grid-column: 3
-          padding-inline-start: $timeline-item-padding
+        &--side-end,
+        &:nth-child(2n+1):not(&--side-start)
+          .v-timeline-item__body
+            grid-column: 3
+            padding-inline-start: $timeline-item-padding
 
-        .v-timeline-item__opposite
-          grid-column: 1
-          justify-self: flex-end
-          padding-inline-end: $timeline-item-padding
+          .v-timeline-item__opposite
+            grid-column: 1
+            justify-self: flex-end
+            padding-inline-end: $timeline-item-padding
 
   // VTimelineItem
   .v-timeline-item
